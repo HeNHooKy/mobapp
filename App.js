@@ -1,20 +1,38 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 
-export default function App() {
+import { default as MapScreen } from './screens/home-map-screen.js';
+import { default as SetupMarkerScreen } from './screens/setup-marker-screen.js';
+
+import { MarkerContext, Stack } from './global.js';
+
+
+const region = {
+  latitude: 56.755289,
+  longitude: 54.118699,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+}
+
+
+
+function App() {
+  let [markers, setMarkers] = useState([]);
+  const value = useMemo(
+    () => ({ markers, setMarkers }), 
+    [markers]
+  );
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <MarkerContext.Provider value={value}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Map" component={MapScreen} initialRegion={region} />
+          <Stack.Screen name="Marker" component={SetupMarkerScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </MarkerContext.Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
