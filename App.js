@@ -1,8 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect  } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { default as MapScreen } from './screens/home-map-screen.js';
 import { default as SetupMarkerScreen } from './screens/setup-marker-screen.js';
+import { openDatabase, addMarker, addImage, loadMarker, loadImages } from './db/db.js';
 
 import { MarkerContext, Stack } from './global.js';
 
@@ -14,14 +15,27 @@ const region = {
   longitudeDelta: 0.0421,
 }
 
+openDatabase();
 
 
 function App() {
   let [markers, setMarkers] = useState([]);
   const value = useMemo(
-    () => ({ markers, setMarkers }), 
+    () => ({ markers, setMarkers }),
     [markers]
   );
+
+  useEffect(() => {
+    loadMarker((markers) => {
+      markers.map(m => {
+        loadImages(m.id, (images) => {
+          console.log(JSON.stringify(images));
+          m.images = images;
+          setMarkers([...markers, m]);
+        });
+      });
+    })
+  }, []);
 
   return (
     <MarkerContext.Provider value={value}>

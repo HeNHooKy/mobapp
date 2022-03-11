@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { View, Image, Button, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { MarkerContext } from '../global.js';
+import { addImage } from '../db/db.js';
 
 function MapImagePicker(props) {
   let { markers } = useContext(MarkerContext);
@@ -18,7 +19,7 @@ function MapImagePicker(props) {
     });
 
     if (!result.cancelled) {
-      setImage([...images, result.uri]);
+      addImage(images, setImage, { markerId: marker.id, uri: result.uri });
       markers[props.markerIndex].images = [...images, result.uri];
     }
   };
