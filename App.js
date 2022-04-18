@@ -29,7 +29,6 @@ function App() {
     loadMarker((markers) => {
       markers.map(m => {
         loadImages(m.id, (images) => {
-          console.log(JSON.stringify(images));
           m.images = images;
           setMarkers([...markers, m]);
         });
